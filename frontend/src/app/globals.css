@@ -92,18 +92,18 @@ body {
     @apply bg-background text-foreground;
   }
 }
-
+/* change */
 .attendance-grid {
   display: grid;
   grid-template-columns: repeat(52, 12px); /* 52 weeks */
   grid-template-rows: repeat(7, 12px); /* 7 days per week */
-  gap: 5px; /* Small gap between cells */
+  gap: 5 px; /* Small gap between cells */
   grid-auto-flow: column;
 }
 
 .grid-cell {
   width: 14px;
   height: 14px;
-  border-radius: 2px; /* Slightly rounded corners */
-  cursor: pointer; /* Show a pointer on hover */
+  border-radius: 2px;
+  cursor: pointer;
 }
