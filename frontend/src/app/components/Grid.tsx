@@ -195,7 +195,7 @@ const AttendanceGrid: React.FC = () => {
   return (
     <div
       ref={gridRef}
-      className="attendance-grid overflow-x-auto h-32 text-sm"
+      className="attendance-grid w-full overflow-x-auto h-32 text-sm"
       onMouseLeave={() => setActiveDay(null)}
     >
       {Array.from({ length: emptyCells }).map((_, index) => (

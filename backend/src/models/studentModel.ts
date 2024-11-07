@@ -19,25 +19,38 @@ const StudentSchema = new mongoose.Schema(
     phone: {
       type: String,
     },
-    // faceEmbedding: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "FaceEmbedding",
-    //   required: true,
-    //   // type: String,
-    // },
     section: {
-      // type: mongoose.Schema.Types.ObjectId,
-      // ref: "Section",
       type: String,
+      required: true,
+      default: "A",
     },
-    course: {
-      // type: mongoose.Schema.Types.ObjectId,
-      // ref: "Course",
-      // required: true,
-      type: String,
+    courseRef: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course",
+      required: true,
     },
     batch: {
       type: Number,
+      required: true,
+    },
+    dateOfBirth: {
+      type: Date,
+      required: true,
+    },
+    contactNo: {
+      type: String,
+      required: true,
+    },
+    photoUrl: {
+      type: String,
+      required: true,
+    },
+    guardianName: {
+      type: String,
+      required: true,
+    },
+    guardianContact: {
+      type: String,
       required: true,
     },
   },

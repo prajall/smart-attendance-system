@@ -34,8 +34,6 @@ export const newAttendance = async (req: Request, res: Response) => {
 
     const newAttendance = new Attendance({
       student: student._id,
-      course: student.course,
-      section: student.section,
       date: today,
       time: currentTime,
       isLate,
@@ -68,7 +66,6 @@ export const getStudentAttendance = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Student not found" });
     }
 
-    // Get current date and one year ago date
     const currentDate = new Date();
     const oneYearAgo = new Date();
     oneYearAgo.setFullYear(currentDate.getFullYear() - 1);
@@ -81,12 +78,11 @@ export const getStudentAttendance = async (req: Request, res: Response) => {
       },
     });
 
-    // Map attendance records to the desired format
     const attendanceData = attendanceRecords.map((record) => ({
-      date: record.date.toISOString().split("T")[0], // Format date as YYYY-MM-DD
-      attendance: record.isLate ? 1 : 2, // Assuming 1 for late and 2 for present
+      date: record.date.toISOString().split("T")[0],
+      attendance: record.isLate ? 1 : 2,
     }));
-
+    console.log(attendanceData);
     return res.status(200).json({
       student: {
         id: student._id,
@@ -95,7 +91,7 @@ export const getStudentAttendance = async (req: Request, res: Response) => {
       totalDays: attendanceData.length,
       presentDays: attendanceData.filter((r) => r.attendance === 2).length,
       lateDays: attendanceData.filter((r) => r.attendance === 1).length,
-      attendanceData, // Return the modified attendance data
+      attendanceData,
     });
   } catch (error: any) {
     console.error("Error fetching attendance:", error);
