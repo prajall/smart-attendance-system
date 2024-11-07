@@ -92,12 +92,11 @@ body {
     @apply bg-background text-foreground;
   }
 }
-/* change */
 .attendance-grid {
   display: grid;
   grid-template-columns: repeat(52, 12px); /* 52 weeks */
   grid-template-rows: repeat(7, 12px); /* 7 days per week */
-  gap: 5 px; /* Small gap between cells */
+  gap: 4px; /* Small gap between cells */
   grid-auto-flow: column;
 }
 

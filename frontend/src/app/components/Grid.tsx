@@ -35,10 +35,10 @@ const SmoothTooltip: React.FC<{
       }}
     >
       <p>
-        <span className="text-muted-foreground">Date:</span> {content}
+        Date: <span className="text-muted-foreground">{content}</span>
       </p>
       <p>
-        <span className="text-muted-foreground">Attendance:</span> {attendance}
+        Attendance: <span className="text-muted-foreground">{attendance}</span>
       </p>
     </div>
   );
@@ -166,15 +166,15 @@ const AttendanceGrid: React.FC = () => {
 
   const fullAttendanceData = generateFullYearAttendance();
 
-  const startDay = new Date(attendanceData[0].date).getDay(); // Get the starting day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-  const emptyCells = startDay + 1; // Number of empty cells to leave before the first attendance cell
+  const startDay = new Date(attendanceData[0].date).getDay();
+  const emptyCells = startDay + 1;
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (gridRef.current) {
         const rect = gridRef.current.getBoundingClientRect();
         setTooltipPosition({
-          x: e.clientX - rect.left + 15, // 15px offset from cursor
+          x: e.clientX - rect.left + 15,
           y: e.clientY - rect.top + 15,
         });
       }
@@ -195,15 +195,13 @@ const AttendanceGrid: React.FC = () => {
   return (
     <div
       ref={gridRef}
-      className="attendance-grid w-1/2 overflow-x-auto h-[9rem]"
+      className="attendance-grid overflow-x-auto h-32 text-sm"
       onMouseLeave={() => setActiveDay(null)}
     >
-      {/* Render empty cells for days before Sunday */}
       {Array.from({ length: emptyCells }).map((_, index) => (
         <div key={`empty-${index}`} className="attendance-cell empty"></div>
       ))}
 
-      {/* Render attendance cells */}
       {fullAttendanceData.map((day, index) => (
         <div
           key={index}

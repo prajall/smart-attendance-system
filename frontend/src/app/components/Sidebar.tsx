@@ -8,6 +8,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import {
   AvatarIcon,
@@ -15,37 +16,39 @@ import {
   QuestionMarkIcon,
 } from "@radix-ui/react-icons";
 import { Home, Icon } from "lucide-react";
-
+import Link from "next/link";
 export default function AppSidebar() {
   return (
     <Sidebar>
-      <SidebarHeader>Smart Attendance</SidebarHeader>
+      <SidebarHeader className="px-4 pt-4 text-xl font-semibold">
+        Smart Attendance
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>General</SidebarGroupLabel>
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <a href="#">
+                <Link href="/dashboard">
                   {" "}
                   <Home /> Dashboard
-                </a>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <a href="#">
+                <Link href="/students">
                   {" "}
-                  <QuestionMarkCircledIcon /> About
-                </a>
+                  <QuestionMarkCircledIcon /> Students
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <a href="#">
+                <Link href="/attendance">
                   {" "}
                   <AvatarIcon /> Attendance
-                </a>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
