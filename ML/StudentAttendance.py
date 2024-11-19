@@ -27,7 +27,7 @@ def preprocess_and_generate_embedding(image):
 
 # Save the embedding for the student
 def save_embedding(embedding, student_id, image_id):
-    save_dir = 'embeddings'
+    save_dir = 'ML/embeddings'
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     np.save(f"{save_dir}/{student_id}_embedding_{image_id}.npy", embedding)

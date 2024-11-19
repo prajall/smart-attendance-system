@@ -77,9 +77,9 @@ def augment_and_average(image):
 # Load multiple embeddings for a student
 def load_reference_embeddings(student_id):
     embeddings = []
-    for i in range(1, 6):  # Assuming 5 images have been captured and saved as 1-5
+    for i in range(1, 25):  # Assuming 25 images have been captured and saved as 1-25
         try:
-            embedding = np.load(f'embeddings/{student_id}_embedding_{i}.npy')
+            embedding = np.load(f'ML/embeddings/{student_id}_embedding_{i}.npy')
             embeddings.append(embedding)
         except FileNotFoundError:
             print(f"Embedding {i} not found for student {student_id}")
