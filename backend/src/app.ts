@@ -6,7 +6,7 @@ import express, { Request, Response } from "express";
 import attendanceRoute from "@/routes/attendance.route";
 import studentRoute from "@/routes/student.route";
 import faceEmbeddingRoute from "@/routes/faceEmbedding.route";
-
+import courseRoute from "@/routes/course.route";
 const app = express();
 
 export default app;
@@ -31,6 +31,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/attendance", attendanceRoute);
 app.use("/student", studentRoute);
 app.use("/face-embedding", faceEmbeddingRoute);
+app.use("/course", courseRoute);
 
 // app.use("/permission", permissionRoute);
 // app.use("/role", roleRoute);

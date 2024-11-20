@@ -101,3 +101,25 @@ export const getStudentAttendance = async (req: Request, res: Response) => {
     });
   }
 };
+
+// Get total attendance of one day.
+export const getTotalAttendance = async (req: Request, res: Response) => {
+  const { date } = req.params;
+  try {
+    const attendanceRecords = await Attendance.find({
+      date: date,
+    });
+    return res.status(200).json(attendanceRecords);
+  } catch (error: any) {
+    console.error("Error fetching attendance:", error);
+    return res.status(500).json({
+      message: "Error fetching attendance records",
+      error: error.message,
+    });
+  }
+};
+
+//get attendance of class
+export const getAttendanceOfClass = async (req: Request, res: Response) => {
+  const { classId } = req.params;
+};

@@ -2,8 +2,22 @@ import { Student } from "@/models/studentModel";
 import { Request, Response } from "express";
 
 export const createStudent = async (req: Request, res: Response) => {
-  const { name, idNumber, email, phone, section, course, batch } = req.body;
+  const {
+    name,
+    idNumber,
+    email,
+    phone,
+    section,
+    courseRef, // Renamed from course in your form code
+    batch,
+    dateOfBirth,
+    contactNo,
+    photoUrl, // Added for photo URL
+    guardianName,
+    guardianContact,
+  } = req.body;
 
+  console.log("Request Body: ", req.body);
   try {
     const existingStudent = await Student.findOne({
       $or: [{ idNumber }, { email }],
@@ -19,14 +33,20 @@ export const createStudent = async (req: Request, res: Response) => {
       idNumber,
       email,
       phone,
-      course,
       section,
+      courseRef,
       batch,
+      dateOfBirth,
+      contactNo,
+      photoUrl,
+      guardianName,
+      guardianContact,
     });
 
     if (!newStudent) {
-      return res.status(500).json("Error creating student");
+      return res.status(500).json({ message: "Error creating student" });
     }
+    console.log("New Student: ", newStudent);
 
     return res.status(201).json(newStudent);
   } catch (error: any) {
@@ -36,7 +56,6 @@ export const createStudent = async (req: Request, res: Response) => {
     });
   }
 };
-
 export const getAllStudents = async (req: Request, res: Response) => {
   const { section, course, batch } = req.body;
 

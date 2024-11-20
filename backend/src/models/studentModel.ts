@@ -5,11 +5,13 @@ const StudentSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
+      index: true,
     },
     idNumber: {
       type: String,
       unique: true,
       required: true,
+      index: true,
     },
     email: {
       type: String,

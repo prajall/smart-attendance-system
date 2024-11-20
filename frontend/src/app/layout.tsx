@@ -5,6 +5,9 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AppSidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
 import FullWidthWrapper from "./components/FullWidthWrapper";
+import { Slide, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -31,9 +34,21 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition={Slide}
+        />
         <SidebarProvider>
           <AppSidebar />
-
           <div className="w-full">
             <Navbar />
             <FullWidthWrapper>{children}</FullWidthWrapper>
