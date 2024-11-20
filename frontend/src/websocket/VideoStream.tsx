@@ -14,7 +14,7 @@ const VideoStream = ({ onFrame }: { onFrame: (frame: Blob) => void }) => {
           videoRef.current.srcObject = stream;
           videoRef.current.play();
         }
-
+        //sdfsdfsdfsd
         const canvas = document.createElement("canvas");
         const context = canvas.getContext("2d");
 
