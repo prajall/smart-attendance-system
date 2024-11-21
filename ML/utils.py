@@ -83,7 +83,8 @@ def geometric_median(embeddings, max_iter=10, tol=1e-8):
     return median
 
 # Function to compare embeddings and find the best match using cosine similarity
-def compare_embeddings(current_embedding, all_embeddings, threshold=0.6):
+def compare_embeddings(current_embedding, all_embeddings, threshold=0.85
+                       ):
     best_match = None
     best_score = -1  # Cosine similarity range is from -1 to 1
 

@@ -50,3 +50,4 @@ def real_time_attendance():
 # Start real-time attendance
 if __name__ == "__main__":
     real_time_attendance()
+
