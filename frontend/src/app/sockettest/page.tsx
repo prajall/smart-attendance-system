@@ -11,6 +11,7 @@ const SocketTest = () => {
   useEffect(() => {
     socket.on("message", (msg) => {
       console.log("Message Received: ", msg);
+      
     });
 
     return () => {
@@ -19,6 +20,7 @@ const SocketTest = () => {
   }, []);
 
   const submitInput = () => {
+
     if (input.trim()) {
       socket.emit("message", input);
       setInput("");
