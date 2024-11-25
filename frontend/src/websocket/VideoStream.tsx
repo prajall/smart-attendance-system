@@ -54,14 +54,19 @@ const VideoStream = ({ onFrame }: { onFrame: (frame: Blob) => void }) => {
     };
   }, [onFrame]);
 
-  return <video ref={videoRef} style={{ width: "100%", height: "auto" }} />;
+  return (
+    <video
+      ref={videoRef}
+      style={{ width: "100%", height: "auto", transform: "scaleX(-1)" }}
+    />
+  );
 };
 
 const VideoStreamHandler = () => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   useEffect(() => {
-    const ws = new WebSocket("ws://your-backend-server-url");
+    const ws = new WebSocket("http://localhost:3001");
     ws.onopen = () => console.log("WebSocket connected");
     ws.onclose = () => console.log("WebSocket disconnected");
     ws.onerror = (error) => console.error("WebSocket error:", error);
