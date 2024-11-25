@@ -1,93 +1,109 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
 
-const VideoStream = ({ onFrame }: { onFrame: (frame: Blob) => void }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
+import React, { useEffect, useRef, useState } from "react";
+import { io } from "socket.io-client";
+
+// Initialize the socket outside the component
+const socket = io("http://localhost:3001");
+
+const VideoStreamHandler = () => {
+  const [sendFrames, setSendFrames] = useState(false);
+
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    const startVideoStream = async () => {
+    socket.on("connect", () => {
+      console.log("WebSocket connection established");
+    });
+
+    socket.on("disconnect", () => {
+      console.log("WebSocket connection closed");
+    });
+
+    socket.on("error", (error) => {
+      console.error("WebSocket error:", error);
+    });
+
+    return () => {
+      // Clean up socket listeners
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("error");
+    };
+  }, []);
+
+  useEffect(() => {
+    const startCamera = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: true,
         });
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
-          videoRef.current.play();
         }
-        //sdfsdfsdfsd
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
-
-        if (context) {
-          const captureFrame = () => {
-            if (videoRef.current) {
-              canvas.width = videoRef.current.videoWidth;
-              canvas.height = videoRef.current.videoHeight;
-              context.drawImage(
-                videoRef.current,
-                0,
-                0,
-                canvas.width,
-                canvas.height
-              );
-              canvas.toBlob((blob) => {
-                if (blob) onFrame(blob);
-              }, "image/jpeg");
-            }
-            requestAnimationFrame(captureFrame);
-          };
-          captureFrame();
-        }
-      } catch (err) {
-        console.error("Error accessing the camera:", err);
+      } catch (error) {
+        console.error("Error accessing webcam:", error);
       }
     };
 
-    startVideoStream();
-
-    return () => {
-      if (videoRef.current?.srcObject) {
-        (videoRef.current.srcObject as MediaStream)
-          .getTracks()
-          .forEach((track) => track.stop());
-      }
-    };
-  }, [onFrame]);
-
-  return (
-    <video
-      ref={videoRef}
-      style={{ width: "100%", height: "auto", transform: "scaleX(-1)" }}
-    />
-  );
-};
-
-const VideoStreamHandler = () => {
-  const [socket, setSocket] = useState<WebSocket | null>(null);
-
-  useEffect(() => {
-    const ws = new WebSocket("http://localhost:3001");
-    ws.onopen = () => console.log("WebSocket connected");
-    ws.onclose = () => console.log("WebSocket disconnected");
-    ws.onerror = (error) => console.error("WebSocket error:", error);
-    setSocket(ws);
-
-    return () => {
-      ws.close();
-    };
+    startCamera();
   }, []);
 
-  const handleFrame = (frame: Blob) => {
-    if (socket?.readyState === WebSocket.OPEN) {
-      frame.arrayBuffer().then((buffer) => {
-        socket.send(buffer);
-      });
+  const captureFrame = () => {
+    if (canvasRef.current && videoRef.current) {
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d");
+      if (context) {
+        context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+
+        const frame = canvas.toDataURL("image/jpeg");
+
+        if (socket.connected) {
+          socket.emit("frame", { frame });
+        } else {
+          console.warn("Socket is not connected");
+        }
+      }
     }
   };
 
+  useEffect(() => {
+    if (!sendFrames) return;
+
+    const interval = setInterval(() => {
+      captureFrame();
+    }, 500);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [sendFrames]);
+
   return (
-    <div className="w-full h-full">
-      <VideoStream onFrame={handleFrame} />
+    <div>
+      <video
+        ref={videoRef}
+        autoPlay
+        muted
+        width="640"
+        height="480"
+        style={{ transform: "scaleX(-1)" }}
+      ></video>
+      <canvas
+        ref={canvasRef}
+        width="640"
+        height="480"
+        style={{ display: "none" }}
+      ></canvas>
+      <button
+        onClick={() => {
+          setSendFrames(!sendFrames);
+        }}
+      >
+        {" "}
+        {sendFrames ? "Stop" : "Start"}
+      </button>
     </div>
   );
 };
