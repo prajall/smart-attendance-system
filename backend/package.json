@@ -36,6 +36,7 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.4",
+    "socket.io": "^4.8.1",
     "tsconfig-paths": "^4.2.0"
   }
 }
