@@ -40,7 +40,7 @@ def real_time_attendance():
                 cv2.putText(frame, f"ID: {student_id}, Name: {name}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                 cv2.putText(frame, f"Score: {similarity_score:.2f}", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                 
-                # Display in terminal
+       
                 print(f"Verified: ID = {student_id}, Name = {name}, Similarity Score = {similarity_score:.2f}")
 
                 # Add delay after successful verification
@@ -50,7 +50,6 @@ def real_time_attendance():
         else:
             cv2.putText(frame, "No face detected", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
-        # Show the frame with annotations
         cv2.imshow('Real-time Attendance', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
