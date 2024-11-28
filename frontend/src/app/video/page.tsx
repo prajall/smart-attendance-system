@@ -1,5 +1,5 @@
-import VideoStreamHandler from "@/websocket/VideoStream";
 import React from "react";
+import VideoStreamHandler from "../../websocket/VideoStream";
 
 const VideoPage = () => {
   return (
