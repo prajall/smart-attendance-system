@@ -1,0 +1,10 @@
+node_modules
+.env
+.venv
+embeddings
+__pycache__
+utils.cpython-311.pyc
+venv
+__pycache__
+*.pyc
+ML/__pycache__/utils.cpython-311.pyc
