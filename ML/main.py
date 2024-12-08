@@ -28,7 +28,7 @@ inception_resnet = InceptionResnetV1(pretrained="vggface2").to(device).eval()
 
 current_frames = []
 frame_count = 0
-max_frames = 50
+max_frames = 150
 is_registering = False
 is_checking = False
 student_id = None
@@ -188,10 +188,9 @@ def check_attendance(data):
             student_id = stored_id
 
     if best_score > 0.8: 
-        # response = requests.post("http://localhost:3000/attendance", json = {"studentId": student_id} )
+        emit("step2")
         print(f"Student recognized: {student_id}")
-        emit("check_2", {"success":1, "message":f"Student recognized: {student_id}"})
-        # print(response)
+        # emit("check_2", {"success":1, "message":f"Student recognized: {student_id}"})
         try:
         # Make a POST request to the attendance route
             response = requests.post(
@@ -201,10 +200,12 @@ def check_attendance(data):
             print("===================response====================",response.json())
             if response.status_code == 200:           
                 is_checking = False
+                emit("step3")
+                emit("check_2", {"success": 1, "message": f"Attendance marked for {response.json()['name']}"})
                 print("Attendance marked successfully",response.json())  
-                # emit("check_2", {"success": 1, "data": response.json()})
             elif response.status_code == 400:
-                emit("check_2", {"success": 0, "message": "Attendance already marked for today"})
+                emit("step3")
+                emit("check_2", {"success": 0, "message": f"Attendance already marked for {response.json()['name']}"})
                 is_checking = False
             else:
                 print("Failed to mark attendance")

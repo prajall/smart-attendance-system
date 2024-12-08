@@ -1,8 +1,5 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import VideoStreamHandler from "../../websocket/VideoStream";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,25 +7,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Check,
-  CheckCheck,
-  CheckCircle,
-  CheckCircle2,
-  CheckSquare,
-} from "lucide-react";
-import { io } from "socket.io-client";
+import { useState } from "react";
+import VideoStreamHandler from "../../websocket/VideoStream";
 
 const VideoPage = () => {
-  const [isCameraOpen, setIsCameraOpen] = useState(true);
-  const [attendanceMarked, setAttendanceMarked] = useState(false);
-
-  const handleCloseCamera = () => {
-    setIsCameraOpen(false);
-    // Simulating attendance marking
-    setTimeout(() => setAttendanceMarked(true), 1000);
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <Card className="">
@@ -40,23 +22,11 @@ const VideoPage = () => {
             We are capturing your face to mark your attendance. Please look
             directly at the camera.
           </p>
-          {isCameraOpen ? (
-            <div className="relative w-[700px]">
-              <VideoStreamHandler mode="check" />
-            </div>
-          ) : (
-            <div className="w-full bg-gray-200 flex items-center justify-center">
-              <p className="text-gray-500">Camera is closed</p>
-            </div>
-          )}
+
+          <div className="relative w-[700px]">
+            <VideoStreamHandler mode="check" />
+          </div>
         </CardContent>
-        <CardFooter className="flex flex-col">
-          {/* {isCameraOpen && (
-            <Button onClick={handleCloseCamera} className="mt-4 bg-blue">
-              Close Camera
-            </Button>
-          )} */}
-        </CardFooter>
       </Card>
     </div>
   );

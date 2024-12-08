@@ -1,12 +1,13 @@
-"use client";
-import React, { useEffect, useRef } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
 import lottie, { AnimationItem } from "lottie-web";
+import animationData from "../assets/animation/face-animation.json";
 
-interface LottieAnimationProps {
-  animationData: object; // JSON object for the Lottie animation
-}
-
-const LottieAnimation: React.FC<LottieAnimationProps> = ({ animationData }) => {
+const LottieAnimation = forwardRef((props, ref) => {
   const animationContainer = useRef<HTMLDivElement>(null);
   const animationInstance = useRef<AnimationItem | null>(null);
 
@@ -24,11 +25,7 @@ const LottieAnimation: React.FC<LottieAnimationProps> = ({ animationData }) => {
     return () => {
       animationInstance.current?.destroy();
     };
-  }, [animationData]);
-
-  const playFullAnimation = () => {
-    animationInstance.current?.play();
-  };
+  }, []);
 
   const playPart = (
     startFrame: number,
@@ -55,27 +52,34 @@ const LottieAnimation: React.FC<LottieAnimationProps> = ({ animationData }) => {
     animationInstance.current?.playSegments([startFrame, endFrame], true);
   };
 
+  const handleStep2 = () => {
+    playPart(75, 84, true, true);
+  };
+
+  const handleStep3 = () => {
+    playPart(107, 150, false, true);
+  };
+
+  const handleReverse2 = () => {
+    playPart(83, 70);
+  };
+
+  // Expose methods to the parent
+  useImperativeHandle(ref, () => ({
+    handleStep2,
+    handleStep3,
+    handleReverse2,
+  }));
+
   return (
     <div>
       <div
         ref={animationContainer}
-        style={{ width: 300, height: 300, transition: "transform 0.3s ease" }}
+        style={{ width: 100, height: 100, transition: "transform 0.3s ease" }}
         className="m-4"
       ></div>
-      <div className="flex gap-2 mt-8">
-        <button onClick={() => playPart(0, 5)}>Step 1</button>
-        <button
-          onClick={() => {
-            playPart(75, 84, true, true);
-          }}
-        >
-          Step 2
-        </button>
-        <button onClick={() => playPart(107, 150, false, true)}>Step 3</button>
-        <button onClick={() => playPart(83, 70)}>Reverse 2</button>
-      </div>
     </div>
   );
-};
+});
 
 export default LottieAnimation;

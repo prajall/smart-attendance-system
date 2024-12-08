@@ -1,8 +1,10 @@
 "use client";
 
+import LottieAnimation from "@/components/LottieAnimation";
 import { Info } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
+import { AnimatePresence, motion } from "framer-motion";
 
 // Initialize the socket outside the component
 const socket = io("http://localhost:5000");
@@ -16,6 +18,7 @@ const VideoStreamHandler = ({
 }) => {
   const [sendFrames, setSendFrames] = useState(false);
   const [message, setMessage] = useState<String>("");
+  const [showFaceIcon, setShowFaceIcon] = useState(false);
   const [reg_1, setReg_1] = useState({
     message: "",
   });
@@ -34,6 +37,12 @@ const VideoStreamHandler = ({
   const [check_3, setCheck_3] = useState({
     message: "",
   });
+
+  const animationRef = useRef<{
+    handleStep2: () => void;
+    handleStep3: () => void;
+    handleReverse2: () => void;
+  } | null>(null);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -79,6 +88,32 @@ const VideoStreamHandler = ({
     socket.on("check_3", (msg) => {
       console.log(msg);
       setCheck_3({ ...check_3, message: msg.message });
+    });
+
+    socket.on("step2", () => {
+      console.log("Step 2 triggered via socket");
+      animationRef.current?.handleStep2();
+    });
+
+    socket.on("step3", () => {
+      console.log("Step 3 triggered via socket");
+      socket.emit("face-check-stop");
+      setSendFrames(false);
+      setTimeout(() => {
+        animationRef.current?.handleStep3();
+      }, 500);
+      setTimeout(() => {
+        animationRef.current?.handleReverse2();
+        setMessage("");
+        setTimeout(() => {
+          setShowFaceIcon(false);
+        }, 500);
+      }, 3000);
+    });
+
+    socket.on("reverse2", () => {
+      console.log("Reverse 2 triggered via socket");
+      animationRef.current?.handleReverse2();
     });
 
     // Message received
@@ -185,13 +220,36 @@ const VideoStreamHandler = ({
           </p>
         </div>
       )}
-      <video
-        ref={videoRef}
-        autoPlay
-        muted
-        className="w-full h-auto transform rounded-md -scale-x-100"
-        style={{ transform: "scaleX(-1)", maxWidth: "700px" }}
-      ></video>
+      <div className=" relative w-full h-full flex justify-center items-center">
+        <AnimatePresence>
+          {sendFrames && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ type: "spring", duration: 0.7, ease: "easeIn" }}
+              className="absolute z-10"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.4)",
+                backdropFilter: "blur(5px)",
+                borderRadius: "40px",
+                top: "10px",
+                left: "50%",
+                transform: "translateX(-50%)",
+              }}
+            >
+              <LottieAnimation ref={animationRef} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          className="w-full h-auto transform rounded-md -scale-x-100"
+          style={{ transform: "scaleX(-1)", maxWidth: "700px" }}
+        ></video>
+      </div>
       <canvas
         ref={canvasRef}
         width="1000"
@@ -208,6 +266,7 @@ const VideoStreamHandler = ({
         className="w-full bg-blue text-white py-2 mt-2 rounded-md"
         onClick={() => {
           setSendFrames(!sendFrames);
+          setShowFaceIcon(!showFaceIcon);
           if (sendFrames) {
             if (mode === "register") {
               socket.emit("register-stop");
