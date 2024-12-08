@@ -1,5 +1,6 @@
 "use client";
 
+import { Info } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 
@@ -8,6 +9,7 @@ const socket = io("http://localhost:5000");
 
 const VideoStreamHandler = ({
   mode,
+  studentId,
 }: {
   mode: "register" | "check";
   studentId?: string;
@@ -150,7 +152,7 @@ const VideoStreamHandler = ({
     if (!sendFrames) return;
     const interval = setInterval(() => {
       captureFrame();
-    }, 1000);
+    }, 200);
 
     return () => {
       clearInterval(interval);
@@ -183,7 +185,6 @@ const VideoStreamHandler = ({
           </p>
         </div>
       )}
-
       <video
         ref={videoRef}
         autoPlay
@@ -197,23 +198,36 @@ const VideoStreamHandler = ({
         height="750"
         style={{ display: "none" }}
       ></canvas>
+
+      <p className="text-center flex gap-1 items-center text-sm text-muted-foreground mt-1">
+        <Info size={16} />
+        Please look directly at the camera while slowly moving your head to
+        capture your face.
+      </p>
       <button
         className="w-full bg-blue text-white py-2 mt-2 rounded-md"
         onClick={() => {
           setSendFrames(!sendFrames);
           if (sendFrames) {
-            // socket.emit("register-stop");
-            socket.emit("face-check-stop");
+            if (mode === "register") {
+              socket.emit("register-stop");
+            } else {
+              socket.emit("face-check-stop");
+            }
           } else {
-            // socket.emit("register-start", { studentId: "1234569999" });
-            socket.emit("face-check-start");
+            if (mode === "register") {
+              socket.emit("register-start", { studentId });
+            } else {
+              socket.emit("face-check-start");
+            }
           }
         }}
       >
         {" "}
-        {sendFrames ? "Stop Check" : "Start Check"}
+        {sendFrames
+          ? "Stop " + (mode === "register" ? "Registering" : "Checking")
+          : "Start " + (mode === "register" ? "Registering" : "Checking")}
       </button>
-
       <p>{reg_1.message}</p>
       <p>{reg_2.message}</p>
       <p>{reg_3.message}</p>

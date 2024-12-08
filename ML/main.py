@@ -28,7 +28,7 @@ inception_resnet = InceptionResnetV1(pretrained="vggface2").to(device).eval()
 
 current_frames = []
 frame_count = 0
-max_frames = 150
+max_frames = 50
 is_registering = False
 is_checking = False
 student_id = None
@@ -133,8 +133,10 @@ def stop_capture():
         median_embedding = geometric_median(np.array(current_frames))
         np.save(os.path.join(embeddings_path, f"{student_id}.npy"), median_embedding)
         is_registering = False
+        print("Registration completed successfully!")
         emit("reg_2",{"success":1, "message": "Registration completed successfully!"})
     else:
+        print("Not enough data. Please try again.")
         emit("reg_2", {"success":0, "message": "Not enough data. Please try again."})
 
 @socketio.on("face-check-start")
@@ -155,7 +157,6 @@ def stop_check():
 def check_attendance(data):
     global is_checking, student_id
     if not is_checking:
-        emit("check_3", {"success":2, "message":"Please start checking first"})
         return
     print("Checking Attendance")
 
@@ -191,6 +192,27 @@ def check_attendance(data):
         print(f"Student recognized: {student_id}")
         emit("check_2", {"success":1, "message":f"Student recognized: {student_id}"})
         # print(response)
+        try:
+        # Make a POST request to the attendance route
+            response = requests.post(
+                "http://localhost:3001/attendance",
+                json={"studentId": student_id}
+            )
+            print("===================response====================",response.json())
+            if response.status_code == 200:           
+                is_checking = False
+                print("Attendance marked successfully",response.json())  
+                # emit("check_2", {"success": 1, "data": response.json()})
+            elif response.status_code == 400:
+                emit("check_2", {"success": 0, "message": "Attendance already marked for today"})
+                is_checking = False
+            else:
+                print("Failed to mark attendance")
+                emit("check_2", {"success": 0, "message": "Failed to mark attendance"})
+        except requests.exceptions.RequestException as e:          
+            print(f"Error: {e}")
+            emit("check_2", {"success": 0, "message": f"Error: {str(e)}"})
+
     else:
         emit("check_2", {"success":0, "message":"No matching student found."})
 

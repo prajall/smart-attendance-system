@@ -4,7 +4,11 @@ import { Attendance } from "@/models/attendanceModel";
 
 // POST request to create
 export const newAttendance = async (req: Request, res: Response) => {
-  const { studentId, date, isLate } = req.body;
+  const { studentId } = req.body;
+  const date = new Date();
+  date.setUTCHours(0, 0, 0, 0);
+  const isLate = false;
+  console.log(date);
   console.log(studentId);
   if (!studentId) {
     return res.status(400).json({ message: "Student ID is required" });
@@ -40,7 +44,7 @@ export const newAttendance = async (req: Request, res: Response) => {
 
     const newAttendance = await Attendance.create({
       student: student._id,
-      date: date.split("T")[0],
+      date: date.toISOString().split("T")[0],
       time: currentTime,
       isLate,
     });

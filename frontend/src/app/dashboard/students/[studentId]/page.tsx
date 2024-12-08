@@ -101,7 +101,7 @@ export default function Component({
                   </div>
                   <div>
                     <h3 className="font-semibold">Date of Birth</h3>
-                    <p>{student.dateOfBirth}</p>
+                    <p>{student.dateOfBirth.split("T")[0]}</p>
                   </div>
                   <div>
                     <h3 className="font-semibold">Course</h3>
