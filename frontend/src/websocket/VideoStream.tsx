@@ -18,15 +18,18 @@ const VideoStreamHandler = ({
 }) => {
   const [sendFrames, setSendFrames] = useState(false);
   const [message, setMessage] = useState<String>("");
-  const [showFaceIcon, setShowFaceIcon] = useState(true);
+  const [showFaceIcon, setShowFaceIcon] = useState(false);
   const [reg_1, setReg_1] = useState({
     message: "",
+    success: true,
   });
   const [reg_2, setReg_2] = useState({
     message: "",
+    success: true,
   });
   const [reg_3, setReg_3] = useState({
     message: "",
+    success: true,
   });
   const [check_1, setCheck_1] = useState({
     message: "",
@@ -65,6 +68,11 @@ const VideoStreamHandler = ({
     socket.on("reg_1", (msg) => {
       console.log(msg);
       setReg_1({ ...reg_1, message: msg.message });
+      setReg_3({
+        ...reg_3,
+        message: "Registering face embeddings",
+        success: true,
+      });
     });
 
     socket.on("reg_2", (msg) => {
@@ -74,7 +82,7 @@ const VideoStreamHandler = ({
 
     socket.on("reg_3", (msg) => {
       console.log(msg);
-      setReg_3({ ...reg_3, message: msg.message });
+      setReg_3({ ...reg_3, message: msg.message, success: msg.success });
     });
 
     socket.on("check_1", (msg) => {
@@ -237,10 +245,6 @@ const VideoStreamHandler = ({
         {check_2?.message && (
           <AnimatePresence>
             <motion.p
-              initial={{ opacity: 0, y: 20, x: -140 }}
-              animate={{ opacity: 1, y: 0, x: -140 }}
-              exit={{ opacity: 0, y: 20, x: -140 }}
-              transition={{ type: "spring", duration: 0.7, ease: "easeIn" }}
               className="text-center py-2 rounded-md z-10"
               style={{
                 position: "absolute",
@@ -259,10 +263,6 @@ const VideoStreamHandler = ({
         {check_3?.message && (
           <AnimatePresence>
             <motion.p
-              initial={{ opacity: 0, y: 20, x: -100 }}
-              animate={{ opacity: 1, y: 0, x: -100 }}
-              exit={{ opacity: 0, y: 20, x: -100 }}
-              transition={{ type: "spring", duration: 0.7, ease: "easeIn" }}
               className="text-center py- rounded-md z-10"
               style={{
                 position: "absolute",
@@ -278,8 +278,26 @@ const VideoStreamHandler = ({
             </motion.p>
           </AnimatePresence>
         )}
+        {reg_3?.message && (
+          <AnimatePresence>
+            <motion.p
+              className="text-center py- rounded-md z-10"
+              style={{
+                position: "absolute",
+                top: "10px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                padding: "5px 20px",
+                color: "white",
+                backgroundColor: reg_3?.success ? "#1cbb9ba4" : "#ef4444a4",
+              }}
+            >
+              {reg_3.message}
+            </motion.p>
+          </AnimatePresence>
+        )}
         <AnimatePresence>
-          {sendFrames && (
+          {showFaceIcon && (
             <motion.div
               initial={{ opacity: 0, y: -20, x: -60 }}
               animate={{ opacity: 1, y: 0, x: -60 }}
@@ -324,7 +342,9 @@ const VideoStreamHandler = ({
         className="w-full bg-blue text-white py-2 mt-2 rounded-md"
         onClick={() => {
           setSendFrames(!sendFrames);
-          setShowFaceIcon(!showFaceIcon);
+          if (mode === "check") {
+            setShowFaceIcon(!showFaceIcon);
+          }
           if (sendFrames) {
             if (mode === "register") {
               socket.emit("register-stop");
@@ -345,9 +365,7 @@ const VideoStreamHandler = ({
           ? "Stop " + (mode === "register" ? "Registering" : "Checking")
           : "Start " + (mode === "register" ? "Registering" : "Checking")}
       </button>
-      <p>{reg_1.message}</p>
-      <p>{reg_2.message}</p>
-      <p>{reg_3.message}</p>
+      <p className="mt-2 text-center">{reg_1.message}</p>
       <p>{check_1.message}</p>
     </div>
   );

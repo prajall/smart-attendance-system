@@ -73,11 +73,11 @@ export default function Component({
                   </Avatar>
                   <p className="text-xs mt-4">Today's Attendance:</p>
                   {student.isPresent ? (
-                    <p className="text-white w-fit text-xs bg-green px-2 rounded-full mt-1">
+                    <p className="text-white w-fit text-xs bg-blue px-2 rounded-full mt-1">
                       Present
                     </p>
                   ) : student.isLate ? (
-                    <p className="text-white w-fit text-xs border-green px-2 rounded-full mt-1">
+                    <p className="text-white w-fit text-xs border-blue px-2 rounded-full mt-1">
                       Late
                     </p>
                   ) : (

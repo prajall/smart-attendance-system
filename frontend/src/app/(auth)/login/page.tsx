@@ -53,7 +53,7 @@ const LoginZ = () => {
       );
       if (response.status === 200) {
         toast.success("LoggedIn Successfully");
-        router.push("/dashboard");
+        router.push("/dashboard/students");
       }
       console.log(response.data);
     } catch (error: any) {
