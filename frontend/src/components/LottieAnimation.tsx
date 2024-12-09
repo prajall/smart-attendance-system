@@ -53,11 +53,11 @@ const LottieAnimation = forwardRef((props, ref) => {
   };
 
   const handleStep2 = () => {
-    playPart(75, 84, true, true);
+    playPart(75, 84, true);
   };
 
   const handleStep3 = () => {
-    playPart(107, 150, false, true);
+    playPart(107, 150, false);
   };
 
   const handleReverse2 = () => {

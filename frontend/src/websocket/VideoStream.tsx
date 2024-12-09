@@ -18,7 +18,7 @@ const VideoStreamHandler = ({
 }) => {
   const [sendFrames, setSendFrames] = useState(false);
   const [message, setMessage] = useState<String>("");
-  const [showFaceIcon, setShowFaceIcon] = useState(false);
+  const [showFaceIcon, setShowFaceIcon] = useState(true);
   const [reg_1, setReg_1] = useState({
     message: "",
   });
@@ -33,9 +33,11 @@ const VideoStreamHandler = ({
   });
   const [check_2, setCheck_2] = useState({
     message: "",
+    success: true,
   });
   const [check_3, setCheck_3] = useState({
     message: "",
+    success: false,
   });
 
   const animationRef = useRef<{
@@ -78,16 +80,22 @@ const VideoStreamHandler = ({
     socket.on("check_1", (msg) => {
       console.log(msg);
       setCheck_1({ ...check_1, message: msg.message });
+      setTimeout(() => {
+        setCheck_1({ ...check_1, message: "" });
+      }, 1500);
     });
 
     socket.on("check_2", (msg) => {
-      console.log(msg.message);
-      setCheck_2({ ...check_2, message: msg.message });
+      console.log("Check2", msg);
+      setCheck_2({ ...check_2, message: msg.message, success: msg.success });
+      setTimeout(() => {
+        setCheck_2({ ...check_2, message: "" });
+      }, 1500);
     });
 
     socket.on("check_3", (msg) => {
       console.log(msg);
-      setCheck_3({ ...check_3, message: msg.message });
+      setCheck_3({ ...check_3, message: msg.message, success: msg.success });
     });
 
     socket.on("step2", () => {
@@ -97,24 +105,22 @@ const VideoStreamHandler = ({
 
     socket.on("step3", () => {
       console.log("Step 3 triggered via socket");
-      socket.emit("face-check-stop");
-      setSendFrames(false);
+      animationRef.current?.handleStep3();
       setTimeout(() => {
-        animationRef.current?.handleStep3();
-      }, 500);
-      setTimeout(() => {
-        animationRef.current?.handleReverse2();
-        setMessage("");
-        setTimeout(() => {
-          setShowFaceIcon(false);
-        }, 500);
-      }, 3000);
+        setSendFrames(false);
+        setShowFaceIcon(false);
+      }, 1000);
     });
 
     socket.on("reverse2", () => {
       console.log("Reverse 2 triggered via socket");
       animationRef.current?.handleReverse2();
     });
+
+    // socket.on("stop", () => {
+    //   setSendFrames(false);
+    //   setShowFaceIcon(false);
+    // });
 
     // Message received
     const handleMessage = (msg: string) => {
@@ -185,9 +191,16 @@ const VideoStreamHandler = ({
 
   useEffect(() => {
     if (!sendFrames) return;
-    const interval = setInterval(() => {
-      captureFrame();
-    }, 200);
+    let interval: NodeJS.Timeout;
+    if (mode === "check") {
+      interval = setInterval(() => {
+        captureFrame();
+      }, 700);
+    } else {
+      interval = setInterval(() => {
+        captureFrame();
+      }, 400);
+    }
 
     return () => {
       clearInterval(interval);
@@ -221,12 +234,56 @@ const VideoStreamHandler = ({
         </div>
       )}
       <div className=" relative w-full h-full flex justify-center items-center">
+        {check_2?.message && (
+          <AnimatePresence>
+            <motion.p
+              initial={{ opacity: 0, y: 20, x: -140 }}
+              animate={{ opacity: 1, y: 0, x: -140 }}
+              exit={{ opacity: 0, y: 20, x: -140 }}
+              transition={{ type: "spring", duration: 0.7, ease: "easeIn" }}
+              className="text-center py-2 rounded-md z-10"
+              style={{
+                position: "absolute",
+                bottom: "10px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                padding: "10px 50px",
+                color: check_2?.success ? "white" : "#ef4444",
+                backgroundColor: check_2?.success ? "#1cbb9ba4" : "#ef4444a4",
+              }}
+            >
+              {check_2.message}
+            </motion.p>
+          </AnimatePresence>
+        )}
+        {check_3?.message && (
+          <AnimatePresence>
+            <motion.p
+              initial={{ opacity: 0, y: 20, x: -100 }}
+              animate={{ opacity: 1, y: 0, x: -100 }}
+              exit={{ opacity: 0, y: 20, x: -100 }}
+              transition={{ type: "spring", duration: 0.7, ease: "easeIn" }}
+              className="text-center py- rounded-md z-10"
+              style={{
+                position: "absolute",
+                bottom: "10px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                padding: "5px 20px",
+                color: "white",
+                backgroundColor: check_3?.success ? "#1cbb9ba4" : "#ef4444a4",
+              }}
+            >
+              {check_3.message}
+            </motion.p>
+          </AnimatePresence>
+        )}
         <AnimatePresence>
           {sendFrames && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0, y: -20, x: -60 }}
+              animate={{ opacity: 1, y: 0, x: -60 }}
+              exit={{ opacity: 0, y: -20, x: -60 }}
               transition={{ type: "spring", duration: 0.7, ease: "easeIn" }}
               className="absolute z-10"
               style={{
@@ -242,6 +299,7 @@ const VideoStreamHandler = ({
             </motion.div>
           )}
         </AnimatePresence>
+
         <video
           ref={videoRef}
           autoPlay
@@ -291,8 +349,6 @@ const VideoStreamHandler = ({
       <p>{reg_2.message}</p>
       <p>{reg_3.message}</p>
       <p>{check_1.message}</p>
-      <p>{check_2.message}</p>
-      <p>{check_3.message}</p>
     </div>
   );
 };

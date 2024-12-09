@@ -10,7 +10,8 @@ import os
 from pymongo import MongoClient
 from utils import geometric_median, cosine_similarity
 import requests
-
+import json
+import time
 # MongoDB setup
 MONGODB_URI = "mongodb+srv://prajal2:pass123@cluster0.fibti.mongodb.net"
 client = MongoClient(MONGODB_URI)
@@ -142,7 +143,10 @@ def stop_capture():
 @socketio.on("face-check-start")
 def start_check():
     global is_checking
+    print(is_checking)
     is_checking = True
+    # print(is_checking)
+
     # emit("check_1", {"message":"Checking Face"})
     print("Checking Face")
 
@@ -160,7 +164,6 @@ def check_attendance(data):
         return
     print("Checking Attendance")
 
-
     best_score = 0.0
 
     # Load stored embeddings
@@ -177,9 +180,9 @@ def check_attendance(data):
     embedding = preprocess_and_generate_embedding(img)
 
     if embedding is None:
-        emit("check_2", {"success":0, "message":"No face detected."})
+        emit("check_1", {"success": 0, "message": "No face detected."})
         return
-    # print("Face Detected")
+
     # Compare embeddings
     for stored_id, stored_embedding in embeddings:
         similarity_score = cosine_similarity(embedding, stored_embedding)
@@ -188,35 +191,38 @@ def check_attendance(data):
             student_id = stored_id
 
     if best_score > 0.8: 
+        is_checking = False
         emit("step2")
         print(f"Student recognized: {student_id}")
-        # emit("check_2", {"success":1, "message":f"Student recognized: {student_id}"})
+
         try:
-        # Make a POST request to the attendance route
+            # Make a POST request to the attendance route
             response = requests.post(
                 "http://localhost:3001/attendance",
                 json={"studentId": student_id}
             )
-            print("===================response====================",response.json())
-            if response.status_code == 200:           
+
+            if response.status_code == 200 or response.status_code == 400:
                 is_checking = False
+                socketio.sleep(1)  
                 emit("step3")
-                emit("check_2", {"success": 1, "message": f"Attendance marked for {response.json()['name']}"})
-                print("Attendance marked successfully",response.json())  
+                print("Attendance marked successfully", response.json())
+                emit("check_2", {"success": 1, "message": f"Attendance marked","student":response.json()})
             elif response.status_code == 400:
-                emit("step3")
-                emit("check_2", {"success": 0, "message": f"Attendance already marked for {response.json()['name']}"})
+                socketio.sleep(1.5)  
+                emit("reverse2")
                 is_checking = False
+
             else:
                 print("Failed to mark attendance")
-                emit("check_2", {"success": 0, "message": "Failed to mark attendance"})
-        except requests.exceptions.RequestException as e:          
+                emit("reverse2")
+
+        except requests.exceptions.RequestException as e:
             print(f"Error: {e}")
             emit("check_2", {"success": 0, "message": f"Error: {str(e)}"})
 
     else:
-        emit("check_2", {"success":0, "message":"No matching student found."})
-
+        emit("check_1", {"success": 0, "message": "No matching student found."})
 
 if __name__ == "__main__":
     socketio.run(app, host="0.0.0.0", port=5000)
