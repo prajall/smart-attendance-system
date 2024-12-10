@@ -86,14 +86,14 @@ def start_capture(data):
     frame_count = 0
     is_registering = True
     student_id = data["studentId"]
-    emit("reg_3", {"succcess":2, "message":"Started capturing frame"})
+    emit("reg_3", {"success":1, "message":"Started capturing frame"})
 
 
 @socketio.on("register-frame")
 def handle_frame(data):
     global is_registering, student_id
     if not is_registering:
-        emit("reg_3", {"success":2, "message":"Please start registration first"})
+        # emit("reg_3", {"success":2, "message":"Please start registration first"})
         return
     print("Frame Received")
     global frame_count
@@ -116,11 +116,11 @@ def handle_frame(data):
 
         if embedding is not None:
             print("Embedding Generated", frame_count)
-            emit("reg_1", {"message":f"Embedding Generated {frame_count}/{max_frames}"})
             current_frames.append(embedding)
             frame_count += 1
+            emit("reg_1", {"message":f"Embedding Generated {frame_count}/{max_frames}"})
         else:
-            emit("reg_2", {"success":0, "message":"No face detected in the frame."})
+            emit("reg_3", {"success":0, "message":"No face detected."})
     except Exception as e:
         emit("reg_3", {"success":0, "message":f"Error processing frame. Please check terminal"})
 
@@ -138,7 +138,7 @@ def stop_capture():
         emit("reg_2",{"success":1, "message": "Registration completed successfully!"})
     else:
         print("Not enough data. Please try again.")
-        emit("reg_2", {"success":0, "message": "Not enough data. Please try again."})
+        emit("reg_3", {"success":0, "message": "Not enough data. Please try again."})
 
 @socketio.on("face-check-start")
 def start_check():

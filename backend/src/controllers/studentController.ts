@@ -114,7 +114,15 @@ export const getStudentById = async (req: Request, res: Response) => {
     if (!student) {
       return res.status(404).json({ message: "Student not found." });
     }
-    return res.status(200).json(student);
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0); // Set to midnight UTC
+    const attendance = await Attendance.findOne({ student: id, date: today });
+    const studentWithAttendance = {
+      ...student.toObject(),
+      isPresent: !!attendance,
+      isLate: attendance?.isLate || false,
+    };
+    return res.status(200).json(studentWithAttendance);
   } catch (error) {
     console.error("Error fetching student:", error);
     return res.status(500).json({ message: "Internal server error." });
