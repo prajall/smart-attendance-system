@@ -5,7 +5,7 @@ export type Student = {
   email: string;
   phone?: string;
   section: string;
-  courseRef: string;
+  course: string;
   batch: number;
   dateOfBirth: Date;
   contactNo: string;

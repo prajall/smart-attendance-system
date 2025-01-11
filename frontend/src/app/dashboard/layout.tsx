@@ -1,11 +1,9 @@
 "use client";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import React, { ReactNode, useContext } from "react";
-import AppSidebar from "../components/Sidebar";
+import { ReactNode } from "react";
 import FullWidthWrapper from "../components/FullWidthWrapper";
 import Navbar from "../components/Navbar";
-import { AppContext } from "@/contexts/AppContexts";
-import { redirect } from "next/navigation";
+import AppSidebar from "../components/Sidebar";
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   // const { appData } = useContext(AppContext);

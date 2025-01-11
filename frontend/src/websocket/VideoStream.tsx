@@ -17,7 +17,7 @@ const VideoStreamHandler = ({
   studentId?: string;
 }) => {
   const [sendFrames, setSendFrames] = useState(false);
-  const [message, setMessage] = useState<String>("");
+  const [message, setMessage] = useState<string>("");
   const [showFaceIcon, setShowFaceIcon] = useState(false);
   const [reg_1, setReg_1] = useState({
     message: "",
@@ -136,14 +136,14 @@ const VideoStreamHandler = ({
       setMessage(msg);
 
       // Reset the timeout for clearing the message
-      //@ts-ignore
+      //@ts-expect-error window definition can cause error
       if (window.messageTimeout) {
-        //@ts-ignore
+        //@ts-expect-error window definition can cause error
         clearTimeout(window.messageTimeout);
       }
 
       // Clear the message after 3 seconds
-      //@ts-ignore
+      //@ts-expect-error window definition can cause error
       window.messageTimeout = setTimeout(() => {
         setMessage("");
       }, 3000);

@@ -1,29 +1,25 @@
 "use client";
-import React, { useState } from "react";
-import { redirect } from "next/navigation";
-import Image from "next/image";
+import { useState } from "react";
 
 // import { FcGoogle } from "react-icons/fc";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
-import { FcGoogle } from "react-icons/fc";
-import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { FcGoogle } from "react-icons/fc";
 import { toast } from "react-toastify";
-import { Loader, Loader2 } from "lucide-react";
+import { z } from "zod";
 
 const formSchema = z.object({
   email: z.string().email(),

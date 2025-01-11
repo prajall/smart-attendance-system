@@ -1,8 +1,7 @@
-import Image from "next/image";
 import { Button } from "@/components/ui/button"; // Assuming you're using Shadcn buttons
-import { User, UserCheck, UserCircle } from "lucide-react"; // Icons from Lucide or Shadcn
-import HomeNav from "./components/HomeNav";
+import { UserCheck } from "lucide-react"; // Icons from Lucide or Shadcn
 import Link from "next/link";
+import HomeNav from "./components/HomeNav";
 
 export default function HomePage() {
   return (

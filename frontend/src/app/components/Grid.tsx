@@ -87,7 +87,7 @@ const AttendanceGrid = ({ studentId }: { studentId: string }) => {
     };
 
     fetchAttendanceData();
-  }, []);
+  }, [studentId]);
 
   const generateFullYearAttendance = () => {
     const fullYearAttendance: AttendanceDay[] = [];
@@ -127,7 +127,7 @@ const AttendanceGrid = ({ studentId }: { studentId: string }) => {
   useEffect(() => {
     const fullAttendanceData = generateFullYearAttendance();
     setFullAttendanceData(fullAttendanceData);
-  }, [attendanceData]);
+  }, [attendanceData, generateFullYearAttendance]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {

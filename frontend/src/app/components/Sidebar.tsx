@@ -8,14 +8,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
-import {
-  AvatarIcon,
-  QuestionMarkCircledIcon,
-  QuestionMarkIcon,
-} from "@radix-ui/react-icons";
-import { Home, Icon } from "lucide-react";
+import { AvatarIcon, QuestionMarkCircledIcon } from "@radix-ui/react-icons";
+import { Home } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 export default function AppSidebar() {

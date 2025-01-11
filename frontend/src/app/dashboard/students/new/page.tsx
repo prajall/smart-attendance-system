@@ -1,8 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -12,21 +19,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import imageCompression from "browser-image-compression";
 import axios from "axios";
-import { toast } from "react-toastify";
+import imageCompression from "browser-image-compression";
 import { Image, Loader2, X } from "lucide-react";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 type StudentFormData = {
   name: string;
@@ -49,7 +48,6 @@ export default function StudentRegistrationForm() {
     handleSubmit,
     formState: { errors },
     setValue,
-    reset,
     clearErrors,
     setError,
   } = useForm<StudentFormData>();
@@ -344,7 +342,7 @@ export default function StudentRegistrationForm() {
       {/* Photo Media */}
       <section className="border border-[#f5f5f5] p-4 rounded-lg">
         <h3 className="text-lg font-semibold mb-2">Photo Media</h3>
-        <Label htmlFor="photo">Upload Student's photo</Label>
+        <Label htmlFor="photo">Upload Student&apos;s photo</Label>
         <div className="relative mt-4">
           {imagePreview ? (
             <div className="relative group w-40">

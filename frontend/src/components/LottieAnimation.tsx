@@ -1,3 +1,4 @@
+"use client";
 import React, {
   useEffect,
   useRef,
@@ -82,4 +83,5 @@ const LottieAnimation = forwardRef((props, ref) => {
   );
 });
 
+LottieAnimation.displayName = "LottieAnimation";
 export default LottieAnimation;

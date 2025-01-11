@@ -4,10 +4,8 @@ import { Attendance } from "@/models/attendanceModel";
 
 // POST request to create
 export const newAttendance = async (req: Request, res: Response) => {
-  const { studentId } = req.body;
-  const date = new Date();
-  date.setUTCHours(0, 0, 0, 0);
-  const isLate = false;
+  const { studentId, date, isLate } = req.body;
+  // date.setUTCHours(0, 0, 0, 0);
   console.log(date);
   console.log(studentId);
   if (!studentId) {
@@ -44,7 +42,7 @@ export const newAttendance = async (req: Request, res: Response) => {
 
     const newAttendance = await Attendance.create({
       student: student._id,
-      date: date.toISOString().split("T")[0],
+      date,
       time: currentTime,
       isLate,
     });

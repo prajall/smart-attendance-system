@@ -6,11 +6,12 @@ import { io } from "socket.io-client";
 const socket = io("http://localhost:3001");
 const SocketTest = () => {
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<String[]>([]);
+  const [messages, setMessage] = useState<string[]>([]);
 
   useEffect(() => {
     socket.on("message", (msg) => {
       console.log("Message Received: ", msg);
+      setMessage((prev) => [...prev, msg]);
     });
 
     return () => {
@@ -34,8 +35,8 @@ const SocketTest = () => {
         placeholder="Enter a message"
       />
       <button onClick={submitInput}>Submit</button>
-      {messages.map((message) => (
-        <p>{message}</p>
+      {messages.map((message: string, index: number) => (
+        <p key={message + index}>{message}</p>
       ))}
     </div>
   );

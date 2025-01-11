@@ -1,18 +1,17 @@
 "use client";
-import { useEffect, useState } from "react";
-import AttendanceGrid, { AttendanceDay } from "@/app/components/Grid";
+import AttendanceGrid from "@/app/components/Grid";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { StudentDetails } from "../../../../../../types/types";
-import { toast } from "react-toastify";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { StudentDetails } from "../../../../../../types/types";
 
 export default function Component({
   params,
 }: {
   params: { studentId: string };
 }) {
-  const [attendanceData, setAttendanceData] = useState<AttendanceDay[]>([]);
   const [student, setStudent] = useState<StudentDetails | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -71,7 +70,7 @@ export default function Component({
                         .join("")}
                     </AvatarFallback>
                   </Avatar>
-                  <p className="text-xs mt-4">Today's Attendance:</p>
+                  <p className="text-xs mt-4">Today&apos;s Attendance:</p>
                   {student.isPresent ? (
                     <p className="text-white w-fit text-xs bg-blue px-2 rounded-full mt-1">
                       Present
@@ -117,11 +116,11 @@ export default function Component({
                   </div>
 
                   <div>
-                    <h3 className="font-semibold">Guardian's Name</h3>
+                    <h3 className="font-semibold">Guardian&apos;s Name</h3>
                     <p>{student.guardianName}</p>
                   </div>
                   <div>
-                    <h3 className="font-semibold">Guardian's Contact</h3>
+                    <h3 className="font-semibold">Guardian&apos;s Contact</h3>
                     <p>{student.guardianContact}</p>
                   </div>
                 </div>

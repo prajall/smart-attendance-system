@@ -4,8 +4,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Student } from "@/types";
 
-export default function StudentCard({ student }: { student: any }) {
+export default function StudentCard({ student }: { student: Student }) {
   return (
     <Card className="shadow-sm">
       <CardContent className="p-4">
